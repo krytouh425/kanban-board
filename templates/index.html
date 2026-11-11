@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ board.title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>{{ board.title }}</h1>
+    <button class="btn-add-card" onclick="openModal()">+ Добавить карточку</button>
+</header>
+
+<div class="board">
+    {% for column in board.columns %}
+    <div class="column" data-column-id="{{ column.id }}">
+        <div class="column-header">
+            <h2>{{ column.title }}</h2>
+            <span class="card-count">{{ column.card_ids|length }}</span>
+        </div>
+        <div class="cards" id="col-{{ column.id }}">
+            {% for card_id in column.card_ids %}
+            {% set card = board.cards[card_id] %}
+            <div class="card priority-{{ card.priority }}"
+                 data-card-id="{{ card.id }}"
+                 draggable="true">
+                <div class="card-title">{{ card.title }}</div>
+                {% if card.description %}
+                <div class="card-desc">{{ card.description }}</div>
+                {% endif %}
+                <div class="card-footer">
+                    <span class="priority-badge">{{ card.priority }}</span>
+                    <button class="btn-delete"
+                            onclick="deleteCard('{{ card.id }}')">✕</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Модальное окно добавления карточки -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3>Новая карточка</h3>
+        <input type="text" id="card-title" placeholder="Название задачи">
+        <textarea id="card-desc" placeholder="Описание (необязательно)"></textarea>
+        <select id="card-priority">
+            <option value="normal">Обычный</option>
+            <option value="high">Высокий</option>
+            <option value="low">Низкий</option>
+        </select>
+        <select id="card-column">
+            {% for column in board.columns %}
+            <option value="{{ column.id }}">{{ column.title }}</option>
+            {% endfor %}
+        </select>
+        <div class="modal-buttons">
+            <button onclick="closeModal()">Отмена</button>
+            <button onclick="addCard()" class="btn-primary">Добавить</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
