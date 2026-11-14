@@ -92,3 +92,55 @@ async function deleteCard(cardId) {
         if (res.ok) location.reload();
     } catch (err) {
         console.error('Ошибка удаления:', err);
+    }
+}
+
+async function addCard() {
+    const title = document.getElementById('card-title').value.trim();
+    const desc = document.getElementById('card-desc').value.trim();
+    const priority = document.getElementById('card-priority').value;
+    const columnId = document.getElementById('card-column').value;
+
+    if (!title) {
+        alert('Введите название задачи');
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/card', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title,
+                description: desc,
+                priority,
+                column_id: columnId
+            })
+        });
+
+        if (res.ok) {
+            closeModal();
+            location.reload();
+        }
+    } catch (err) {
+        console.error('Ошибка добавления:', err);
+    }
+}
+
+// ===== МОДАЛЬНОЕ ОКНО =====
+
+function openModal() {
+    document.getElementById('modal').classList.add('open');
+    document.getElementById('card-title').focus();
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    document.getElementById('card-title').value = '';
+    document.getElementById('card-desc').value = '';
+}
+
+// закрываем модалку по клику на фон
+document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
