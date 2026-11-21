@@ -47,15 +47,23 @@ class FiltrKarotchek:
         vsego = len(self.board.cards)
         po_prioritetam = {"high": 0, "normal": 0, "low": 0}
         po_kolonkam = {}
+        vypolneno = 0
 
         for card in self.board.cards.values():
             po_prioritetam[card.priority] = po_prioritetam.get(card.priority, 0) + 1
 
         for col in self.board.columns:
             po_kolonkam[col.title] = len(col.card_ids)
+            # считаем выполненные — последняя колонка это "Готово"
+            if col == self.board.columns[-1]:
+                vypolneno = len(col.card_ids)
+
+        protsent = round(vypolneno / vsego * 100) if vsego > 0 else 0
 
         return {
             "vsego": vsego,
+            "vypolneno": vypolneno,
+            "protsent": protsent,
             "po_prioritetam": po_prioritetam,
             "po_kolonkam": po_kolonkam
         }
