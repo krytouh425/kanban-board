@@ -36,12 +36,21 @@ class StatistikaDoski:
         po_prior = self.po_prioritetam()
         po_kol = self.po_kolonkam()
         starye = self.starye_kartochki()
+        vsego = len(self.board.cards)
+
+        # считаем процент выполненных
+        vypolneno = po_kol.get(
+            self.board.columns[-1].title, 0
+        ) if self.board.columns else 0
+        protsent = round(vypolneno / vsego * 100) if vsego > 0 else 0
+        progress = "█" * (protsent // 10) + "░" * (10 - protsent // 10)
 
         print(f"\n{'=' * 45}")
         print(f"  СТАТИСТИКА ДОСКИ")
         print(f"  Дата: {self.vremya.strftime('%d.%m.%Y')}")
         print(f"{'=' * 45}")
-        print(f"  Всего карточек: {len(self.board.cards)}")
+        print(f"  Всего карточек: {vsego}")
+        print(f"  Прогресс: {progress} {protsent}%")
 
         print(f"\n  По колонкам:")
         for kolonka, count in po_kol.items():
